@@ -34,3 +34,12 @@ vue-routerインストール（参考https://qiita.com/camomile_cafe/items/12de5
 ```
 npm install --save-dev vue-router
 ```
+
+Element UIインストール
+
+```
+vue add element
+? How do you want to import Element? Fully import
+? Do you wish to overwrite Element's SCSS variables? No
+? Choose the locale you want to load ja
+```
