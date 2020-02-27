@@ -43,3 +43,32 @@ vue add element
 ? Do you wish to overwrite Element's SCSS variables? No
 ? Choose the locale you want to load ja
 ```
+
+
+## 動作確認
+下記コマンドを実行し、テスト用バックエンドのリポジトリをクローンし起動
+(ポート5000を開けた状態で実行すること！)
+```
+$ git clone https://github.com/TomoyukiNamura/test_flower-backend.git
+$ cd test_flower-backend
+$ pipenv install
+$ pipenv shell
+(test_flower-backend) bash-3.2$ python main.py
+ * Serving Flask app "main" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+```
+
+本リポジトリのフロントエンドサーバを起動
+```
+$ cd flower-frontend
+$ npm run serve
+```
+
+下記にアクセス
+http://localhost:8080/
+http://localhost:8080/followings
+http://localhost:8080/followers
