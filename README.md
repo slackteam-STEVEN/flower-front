@@ -69,6 +69,6 @@ $ npm run serve
 ```
 
 下記にアクセス
-http://localhost:8080/
-http://localhost:8080/followings
-http://localhost:8080/followers
+- http://localhost:8080/
+- http://localhost:8080/followings
+- http://localhost:8080/followers
