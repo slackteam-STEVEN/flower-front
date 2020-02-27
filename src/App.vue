@@ -1,11 +1,13 @@
 <template>
   <div id="app">
     <el-menu :default-active="activeIndex" mode="horizontal" router>
-      <el-menu-item index="home" :route="{ name:'home' }">Home</el-menu-item>
-      <el-menu-item index="about" :route="{ name:'about' }">About</el-menu-item>
+      <el-menu-item index="following" :route="{ name:'following' }">Following</el-menu-item>
+      <el-menu-item index="followers" :route="{ name:'followers' }">Followers</el-menu-item>
+<!--
       <el-menu-item>
         <a href="https://element.eleme.io" target="_blank">Link</a>
       </el-menu-item>
+-->
     </el-menu>
     <router-view />
   </div>

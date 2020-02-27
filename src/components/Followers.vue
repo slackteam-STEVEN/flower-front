@@ -1,7 +1,12 @@
 <template>
-  <div class="home">
+  <div class="followers">
     <el-table class="data-table" :data="tableData" stripe>
-      <el-table-column prop="icon" label="アイコン" width="100"></el-table-column>
+      <el-table-column prop="name" label="名前" width="200"></el-table-column>
+      <el-table-column prop="screen_name" label="スコープ名" width="200"></el-table-column>
+      <el-table-column prop="message" label="ひとこと" width="800"></el-table-column>
+      <el-table-column prop="following" label="Following" width="200"></el-table-column>
+      <el-table-column prop="followers" label="Followers" width="200"></el-table-column>
+<!--
       <el-table-column label="名前" width="250">
         <template slot-scope="scope">
           <el-link :href="scope.row.url" type="primary">
@@ -12,13 +17,8 @@
       <el-table-column>
         <el-button type="danger">Delete</el-button>
       </el-table-column>
-    </el-table>
-
-<!--
-    <div>
-      <p>{{tableData}}</p>
-    </div>
 -->
+    </el-table>
 
   </div>
 </template>
@@ -39,10 +39,8 @@ export default {
   },
   methods: {
     updataTableData: async function () {
-      const response = await axios.get('http://localhost:5000/api/spam')
-      // const response = await axios.get('http://localhost:5000/test')
+      const response = await axios.get('http://localhost:5000/followers')
       this.tableData = response.data
-      // console.log(this.tableData)
     }
   }
 }
