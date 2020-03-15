@@ -46,11 +46,8 @@ vue add element
 
 
 ## 動作確認
-下記コマンドを実行し、テスト用バックエンドのリポジトリをクローンし起動
-(ポート5000を開けた状態で実行すること！)
 ```
-$ git clone https://github.com/TomoyukiNamura/test_flower-backend.git
-$ cd test_flower-backend
+$ cd test_backend
 $ pipenv install
 $ pipenv shell
 (test_flower-backend) bash-3.2$ python main.py
@@ -62,7 +59,6 @@ $ pipenv shell
  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 ```
 
-本リポジトリのフロントエンドサーバを起動
 ```
 $ cd flower-frontend
 $ npm run serve
