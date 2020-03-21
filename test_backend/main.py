@@ -15,22 +15,22 @@ with open("testdata/followers.txt", "r") as f:
 
 @app.route("/add_follow", methods=["POST"])
 def add_follow():
-    return "add_follow"
+    return "add_follow\n"
 
 
 @app.route("/unfollow", methods=["POST"])
 def unfollow():
-    return "unfollow"
+    return "unfollow\n"
 
 
 @app.route("/get_follow", methods=["GET"])
 def get_follow():
-    return json.dumps({"code": 200, "contents": following})
+    return json.dumps({"status_code": 200, "context": following})
 
 
 @app.route("/get_follower", methods=["GET"])
 def get_follower():
-    return json.dumps({"code": 200, "contents": followers})
+    return json.dumps({"status_code": 200, "context": followers})
 
 
 if __name__ == "__main__":

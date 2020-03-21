@@ -4,6 +4,7 @@
       <el-menu-item index="following" :route="{ name:'following' }">Following</el-menu-item>
       <el-menu-item index="followers" :route="{ name:'followers' }">Followers</el-menu-item>
 <!--
+      <el-menu-item index="error" :route="{ name:'error' }"></el-menu-item>
       <el-menu-item>
         <a href="https://element.eleme.io" target="_blank">Link</a>
       </el-menu-item>
