@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -20,7 +20,15 @@ def add_follow():
 
 @app.route("/unfollow", methods=["POST"])
 def unfollow():
-    return "unfollow\n"
+
+    print(request.form["screen_name"])
+    for i in range(len(followers)):
+        print(followers[i]["screen_name"])
+        if followers[i]["screen_name"] == request.form["screen_name"]:
+            followers[i]["following"] = False
+            print("success!")
+
+    return f"unfollow\n"
 
 
 @app.route("/get_follow", methods=["GET"])

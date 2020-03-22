@@ -15,13 +15,13 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="screen_name" width="100"></el-table-column>
+      <el-table-column prop="at_screen_name" width="100"></el-table-column>
       <el-table-column prop="description" width="400"></el-table-column>
       <el-table-column prop="friends_count" label="フォロー中" width="100"></el-table-column>
       <el-table-column prop="followers_count" label="フォロワー" width="100"></el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button type="danger" v-if="scope.row.following=='True'" v-on:click="unFollow">
+          <el-button type="danger" v-if="scope.row.following=='True'" v-on:click="unFollow(scope.row.screen_name)">
             フォロー除外
           </el-button>
           <el-button type="primary" v-else v-on:click="addFollow">
@@ -52,17 +52,27 @@ export default {
   methods: {
     updataTableData: async function () {
       const response = await axios.get('http://localhost:5000/get_follower')
+      console.log(response.data.context)
       this.tableData = response.data.context
       this.tableData.forEach(function(data){
         data["user_page_url_https"] = "https://twitter.com/" + data["screen_name"]
-        data["screen_name"] = "@" + data["screen_name"]
+        data["at_screen_name"] = "@" + data["screen_name"]
       });
     },
-    unFollow: async function () {
-      await axios.post('http://localhost:5000/unfollow')
+    unFollow: async function (screen_name) {
+      var params = new URLSearchParams()
+      params.append('screen_name', screen_name)
+      await axios.post('http://localhost:5000/unfollow', params)
+      this.tableData.forEach(function(data){
+        if(data['screen_name'] == screen_name){
+          data['following'] = 'False'
+        }
+      });
     },
     addFollow: async function () {
-      await axios.post('http://localhost:5000/add_follow')
+      var params = new URLSearchParams()
+      params.append('type', 'followers')
+      await axios.post('http://localhost:5000/add_follow', params)
     },
     navigateTargetUrl: function (url) {
       //console.log(url)
