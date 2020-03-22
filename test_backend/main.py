@@ -15,20 +15,18 @@ with open("testdata/followers.txt", "r") as f:
 
 @app.route("/add_follow", methods=["POST"])
 def add_follow():
-    return "add_follow\n"
+    for i in range(len(followers)):
+        if followers[i]["screen_name"] == request.form["screen_name"]:
+            followers[i]["following"] = True
+    return json.dumps({"status_code": 200})
 
 
 @app.route("/unfollow", methods=["POST"])
 def unfollow():
-
-    print(request.form["screen_name"])
     for i in range(len(followers)):
-        print(followers[i]["screen_name"])
         if followers[i]["screen_name"] == request.form["screen_name"]:
             followers[i]["following"] = False
-            print("success!")
-
-    return f"unfollow\n"
+    return json.dumps({"status_code": 200})
 
 
 @app.route("/get_follow", methods=["GET"])

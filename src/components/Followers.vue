@@ -21,10 +21,10 @@
       <el-table-column prop="followers_count" label="フォロワー" width="100"></el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button type="danger" v-if="scope.row.following=='True'" v-on:click="unFollow(scope.row.screen_name)">
+          <el-button type="danger" v-if="scope.row.following=='True'" v-on:click="unfollow(scope.row.screen_name)">
             フォロー除外
           </el-button>
-          <el-button type="primary" v-else v-on:click="addFollow">
+          <el-button type="primary" v-else v-on:click="addFollow(scope.row.screen_name)">
             フォロー追加
           </el-button>
         </template>
@@ -42,8 +42,6 @@ export default {
   data () {
     return {
       tableData: [],
-      hoge: true
-      //hoge: false
     }
   },
   mounted () {
@@ -51,29 +49,62 @@ export default {
   },
   methods: {
     updataTableData: async function () {
+    
+      // back側にフォロー一覧を取得する要求を飛ばす
       const response = await axios.get('http://localhost:5000/get_follower')
-      console.log(response.data.context)
+    
+      // 内容を保存
       this.tableData = response.data.context
+    
+      // 内容を一部追加
       this.tableData.forEach(function(data){
         data["user_page_url_https"] = "https://twitter.com/" + data["screen_name"]
         data["at_screen_name"] = "@" + data["screen_name"]
-      });
+      })
+    
     },
-    unFollow: async function (screen_name) {
+    
+    
+    addFollow: async function (screen_name) {
+      // パラメータにscreen_nameをセット
       var params = new URLSearchParams()
       params.append('screen_name', screen_name)
-      await axios.post('http://localhost:5000/unfollow', params)
-      this.tableData.forEach(function(data){
-        if(data['screen_name'] == screen_name){
-          data['following'] = 'False'
-        }
-      });
+    
+      // back側にフォロー追加の要求を飛ばす
+      const response = await axios.post('http://localhost:5000/add_follow', params)
+    
+      // back側への要求成功の場合、front側の表示用データを変更
+      if(response.data.status_code == 200){
+        this.tableData.forEach(function(data){
+          if(data['screen_name'] == screen_name){
+            data['following'] = 'True'
+          }
+        })
+      }
+    
     },
-    addFollow: async function () {
+    
+    
+    unfollow: async function (screen_name) {
+      // パラメータにscreen_nameをセット
       var params = new URLSearchParams()
-      params.append('type', 'followers')
-      await axios.post('http://localhost:5000/add_follow', params)
+      params.append('screen_name', screen_name)
+    
+      // back側にフォロー削除の要求を飛ばす
+      const response = await axios.post('http://localhost:5000/unfollow', params)
+    
+      // back側への要求成功の場合、front側の表示用データを変更
+      if(response.data.status_code == 200){
+        this.tableData.forEach(function(data){
+          if(data['screen_name'] == screen_name){
+            data['following'] = 'False'
+          }
+        })
+      }
+    
     },
+
+
     navigateTargetUrl: function (url) {
       //console.log(url)
       window.open(url, null, "noopener");
