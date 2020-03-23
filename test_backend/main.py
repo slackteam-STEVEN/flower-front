@@ -13,11 +13,20 @@ with open("testdata/followers.txt", "r") as f:
     followers = json.loads(f.read())
 
 
+@app.route("/access", methods=["GET"])
+def access():
+    oauth_token = request.args.get("oauth_token", "")
+    oauth_verifier = request.args.get("oauth_verifier", "")
+    print(oauth_token)
+    print(oauth_verifier)
+    return json.dumps({"status_code": 200})
+
+
 @app.route("/add_follow", methods=["POST"])
 def add_follow():
     for i in range(len(followers)):
         if followers[i]["screen_name"] == request.form["screen_name"]:
-            followers[i]["following"] = True
+            followers[i]["following"] = "True"
     return json.dumps({"status_code": 200})
 
 
@@ -25,7 +34,7 @@ def add_follow():
 def unfollow():
     for i in range(len(followers)):
         if followers[i]["screen_name"] == request.form["screen_name"]:
-            followers[i]["following"] = False
+            followers[i]["following"] = "False"
     return json.dumps({"status_code": 200})
 
 
