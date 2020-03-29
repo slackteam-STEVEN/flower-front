@@ -2,21 +2,18 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Followers from './components/Followers.vue'
 import Following from './components/Following.vue'
-import Error from './components/Error.vue'
 
 Vue.use(Router)
-
-//const Error = {
-//    template: '<h1>Not found</h1>'
-//};
-
 
 
 const routes = [
   {
     path: '/',
-    name: 'following',
-    component: Following
+    name: 'top',
+    component: {
+      template: "",
+      created() {window.location.href="http://192.168.0.3:5000/access"}
+    }
   },
   {
     path: '/following',
@@ -31,7 +28,10 @@ const routes = [
   {
     path: '*',
     name: 'error',
-    component: Error
+    component: {
+      template: "",
+      created() {window.location.href="/error.html"}
+    }
   }
 ]
 

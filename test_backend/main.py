@@ -12,8 +12,8 @@ CORS(app)
 
 consumer_key = os.environ["TW_CON_KEY"]
 consumer_secret = os.environ["TW_CON_SKEY"]
-access_token = os.environ["TW_ACC_TOKEN"]
-secret_access_taken = os.environ["TW_ACC_STOKEN"]
+# access_token = os.environ["TW_ACC_TOKEN"]
+# secret_access_taken = os.environ["TW_ACC_STOKEN"]
 
 my_info_keys = [
     "id",
@@ -21,10 +21,14 @@ my_info_keys = [
     "screen_name",
     "profile_image_url_https",
     "friends_count",
-    "followers_count"
+    "followers_count",
 ]
 
 login_info = {}
+
+
+with open("testdata/myinfo.txt", "r") as f:
+    myinfo = json.loads(f.read())
 
 with open("testdata/following.txt", "r") as f:
     following = json.loads(f.read())
@@ -43,7 +47,7 @@ def access():
 
     # すでにlogin_infoに同じipがある場合、topにリダイレクト
     if request.environ["REMOTE_ADDR"] in list(login_info.keys()):
-        return redirect("http://192.168.0.3:8080/")
+        return redirect("http://192.168.0.3:8080/following")
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     login_url = auth.get_authorization_url()
@@ -63,17 +67,18 @@ def register():
         "oauth_verifier": oauth_verifier,
     }
     print(login_info)
-    return redirect("http://192.168.0.3:8080")
+    return redirect("http://192.168.0.3:8080/following")
 
 
 @app.route("/get_myinfo", methods=["GET"])
 def get_myinfo():
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, secret_access_taken)
-    api = tweepy.API(auth, wait_on_rate_limit=True)
-    my_info = api.me()._json
-    result = {key: my_info[key] for key in my_info_keys}
-    return json.dumps({"status_code": 200, "context": result})
+    # auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    # auth.set_access_token(access_token, secret_access_taken)
+    # api = tweepy.API(auth, wait_on_rate_limit=True)
+    # my_info = api.me()._json
+    # result = {key: my_info[key] for key in my_info_keys}
+    # return json.dumps({"status_code": 200, "context": result})
+    return json.dumps({"status_code": 200, "context": myinfo})
 
 
 @app.route("/add_follow", methods=["POST"])
