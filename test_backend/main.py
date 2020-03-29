@@ -3,7 +3,7 @@ import os
 
 import tweepy
 
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, url_for
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -20,11 +20,11 @@ my_info_keys = [
     "name",
     "screen_name",
     "profile_image_url_https",
+    "friends_count",
+    "followers_count"
 ]
 
-
-oauth_token_list = []
-oauth_verifier_list = []
+login_info = {}
 
 with open("testdata/following.txt", "r") as f:
     following = json.loads(f.read())
@@ -33,24 +33,18 @@ with open("testdata/followers.txt", "r") as f:
     followers = json.loads(f.read())
 
 
-def get_my_info():
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, secret_access_taken)
-    api = tweepy.API(auth, wait_on_rate_limit=True)
-    my_info = api.me()._json
-    result = {key: my_info[key] for key in my_info_keys}
-    return result
-
-
 @app.route("/print_keys", methods=["GET"])
 def print_keys():
-    print(oauth_token_list)
-    print(oauth_verifier_list)
     return json.dumps({"status_code": 200})
 
 
 @app.route("/access", methods=["GET"])
 def access():
+
+    # すでにlogin_infoに同じipがある場合、topにリダイレクト
+    if request.environ["REMOTE_ADDR"] in list(login_info.keys()):
+        return redirect("http://192.168.0.3:8080/")
+
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     login_url = auth.get_authorization_url()
     return redirect(login_url)
@@ -58,11 +52,28 @@ def access():
 
 @app.route("/register", methods=["GET"])
 def register():
+
+    # oauth_token取得
     oauth_token = request.args.get("oauth_token", "")
     oauth_verifier = request.args.get("oauth_verifier", "")
-    oauth_token_list.append(oauth_token)
-    oauth_verifier_list.append(oauth_verifier)
-    return redirect("http://localhost:8080/followers")
+
+    # ログイン情報を登録(ipをキーとする)
+    login_info[request.environ["REMOTE_ADDR"]] = {
+        "oauth_token": oauth_token,
+        "oauth_verifier": oauth_verifier,
+    }
+    print(login_info)
+    return redirect("http://192.168.0.3:8080")
+
+
+@app.route("/get_myinfo", methods=["GET"])
+def get_myinfo():
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, secret_access_taken)
+    api = tweepy.API(auth, wait_on_rate_limit=True)
+    my_info = api.me()._json
+    result = {key: my_info[key] for key in my_info_keys}
+    return json.dumps({"status_code": 200, "context": result})
 
 
 @app.route("/add_follow", methods=["POST"])
@@ -83,13 +94,13 @@ def unfollow():
 
 @app.route("/get_follow", methods=["GET"])
 def get_follow():
-    return json.dumps({"status_code": 200, "me": get_my_info(), "context": following})
+    return json.dumps({"status_code": 200, "context": following})
 
 
 @app.route("/get_follower", methods=["GET"])
 def get_follower():
-    return json.dumps({"status_code": 200, "me": get_my_info(), "context": followers})
+    return json.dumps({"status_code": 200, "context": followers})
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=5000, threaded=True)
