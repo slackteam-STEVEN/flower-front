@@ -52,6 +52,7 @@ def access():
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     login_url = auth.get_authorization_url()
     return redirect(login_url)
+    # return json.dumps({"status_code": 200, "login_url": login_url, "key": "hoge"})
 
 
 @app.route("/register", methods=["GET"])

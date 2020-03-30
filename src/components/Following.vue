@@ -78,8 +78,29 @@ export default {
     
     },
     
+
+    addFollow: function(screen_name) {
+      this.$confirm('このユーザをフォローしますか?', 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'キャンセル',
+        type: 'warning'
+      }).then(() => {
+        this.baseAddFollow(screen_name)
+        this.$message({
+          type: 'success',
+          message: 'フォローしました'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'キャンセルしました'
+        });          
+      });
+    },
     
-    addFollow: async function (screen_name) {
+    
+    baseAddFollow: async function (screen_name) {
+
       // パラメータにscreen_nameをセット
       var params = new URLSearchParams()
       params.append('screen_name', screen_name)
@@ -99,7 +120,28 @@ export default {
     },
     
     
-    unfollow: async function (screen_name) {
+    unfollow: function(screen_name) {
+      this.$confirm('このユーザをフォローから除外しますか?', 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'キャンセル',
+        type: 'warning'
+      }).then(() => {
+        this.baseUnfollow(screen_name)
+        this.$message({
+          type: 'success',
+          message: 'フォローから除外しました'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'キャンセルしました'
+        });          
+      });
+    },
+    
+    
+    baseUnfollow: async function (screen_name) {
+
       // パラメータにscreen_nameをセット
       var params = new URLSearchParams()
       params.append('screen_name', screen_name)

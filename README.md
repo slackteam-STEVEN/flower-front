@@ -35,6 +35,10 @@ vue-routerインストール（参考https://qiita.com/camomile_cafe/items/12de5
 npm install --save-dev vue-router
 ```
 
+```
+npm install --save vuex
+```
+
 Element UIインストール
 
 ```
