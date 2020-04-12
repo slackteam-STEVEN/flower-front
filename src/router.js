@@ -7,13 +7,18 @@ Vue.use(Router)
 
 
 const routes = [
+//  {
+//    path: '/',
+//    name: 'top',
+//    component: {
+//      template: "",
+//      created() {window.location.href="http://192.168.0.3:5000/access"}
+//    }
+//  },
   {
     path: '/',
     name: 'top',
-    component: {
-      template: "",
-      created() {window.location.href="http://192.168.0.3:5000/access"}
-    }
+    component: Following
   },
   {
     path: '/following',
@@ -24,6 +29,21 @@ const routes = [
     path: '/followers',
     name: 'followers',
     component: Followers
+  },
+  {
+    path: '/get_tw_oauth',
+    name: 'get_tw_oauth',
+    component: {
+      template: "",
+      created() {
+        // redirect to backend with params()
+        let params = "random_str=" + "shikarand" + "&"
+        params = params + "oauth_token=" + this.$route.query['oauth_token'] + "&"
+        params = params + "oauth_verifier=" + this.$route.query['oauth_verifier']
+        const redirect_url = "http://192.168.0.3:5000/register?" + params
+        window.location.href = redirect_url
+      }
+    },
   },
   {
     path: '*',

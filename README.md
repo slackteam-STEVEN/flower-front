@@ -31,12 +31,11 @@ npm install --save axios vue-axios
 ```
 
 vue-routerインストール（参考https://qiita.com/camomile_cafe/items/12de555b87c4654cc49a）
+vue-cookiesインストール(https://www.npmjs.com/package/vue-cookies)
 ```
 npm install --save-dev vue-router
-```
-
-```
 npm install --save vuex
+npm install --save vue-cookies
 ```
 
 Element UIインストール

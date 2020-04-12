@@ -46,28 +46,59 @@ def print_keys():
 def access():
 
     # すでにlogin_infoに同じipがある場合、topにリダイレクト
-    if request.environ["REMOTE_ADDR"] in list(login_info.keys()):
-        return redirect("http://192.168.0.3:8080/following")
+    # if request.environ["REMOTE_ADDR"] in list(login_info.keys()):
+    #    return redirect("http://192.168.0.3:8080/following")
 
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    login_url = auth.get_authorization_url()
-    return redirect(login_url)
-    # return json.dumps({"status_code": 200, "login_url": login_url, "key": "hoge"})
+    # auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    # login_url = auth.get_authorization_url()
+    # return redirect(login_url)
+
+    screen_name = request.args.get("screen_name")
+
+    if screen_name == "shkashkashkas":
+        result = {
+            "status_code": 200,
+            "random_str": "shikarand",
+        }
+
+    else:
+        # idがDBにない(twitterAPI認証できない)場合の処理
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        redirect_url = auth.get_authorization_url()
+        result = {
+            "status_code": 200,
+            "redirect_url": redirect_url,
+            "random_str": "qawsedrftgyhujikolp",
+        }
+
+    return json.dumps(result)
 
 
 @app.route("/register", methods=["GET"])
 def register():
 
     # oauth_token取得
-    oauth_token = request.args.get("oauth_token", "")
-    oauth_verifier = request.args.get("oauth_verifier", "")
+    # oauth_token = request.args.get("oauth_token", "")
+    # oauth_verifier = request.args.get("oauth_verifier", "")
 
     # ログイン情報を登録(ipをキーとする)
-    login_info[request.environ["REMOTE_ADDR"]] = {
+    # login_info[request.environ["REMOTE_ADDR"]] = {
+    #    "oauth_token": oauth_token,
+    #    "oauth_verifier": oauth_verifier,
+    # }
+    # print(login_info)
+    oauth_token = request.args.get("oauth_token")
+    oauth_verifier = request.args.get("oauth_verifier")
+    random_str = request.args.get("random_str")
+
+    result = {
+        "status_code": 200,
         "oauth_token": oauth_token,
         "oauth_verifier": oauth_verifier,
+        "random_str": random_str,
     }
-    print(login_info)
+    print(result)
+    # return json.dumps(result)
     return redirect("http://192.168.0.3:8080/following")
 
 

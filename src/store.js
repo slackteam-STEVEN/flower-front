@@ -7,11 +7,11 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-//const axios = require('axios').create()
+const axios = require('axios').create()
 
 const store = new Vuex.Store({
   state: {
-    user: {},
+    user: "",
     token: "",
     status: false
   },
@@ -46,21 +46,23 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    getToken: async function ({ commit }) {
+    getToken: async function ({ commit }, payload) {
 
-      // トークンとリダイレクトURL取得
-      //const response = await axios.get('http://192.168.0.3:5000/access')
-      //const response = {"data": {"token": "aheahe", "login_ur": "https://google.com"}};
-      const response = {"data": {"token": "aheahe"}};
+      // ランダム文字列とリダイレクトURL取得
+      const response = await axios.get('http://192.168.0.3:5000/access', {
+        params: {
+          screen_name: payload.screen_name
+        }
+      })
 
-      // トークンをユーザ情報とともに格納
-      //commit('registerUserInfo', {"user": {"hoge": 123}, "token": response.data.token})
-      commit('registerToken', response.data.token)
+      // ランダム文字列をユーザ情報とともに格納
+      commit('registerUser', payload.screen_name)
+      commit('registerToken', response.data.random_str)
 
       // リダイレクト
-      const login_url = response.data.login_url
-      if (login_url != undefined) {
-        window.location.href = login_url
+      const redirect_url = response.data.redirect_url
+      if (redirect_url != null) {
+        window.location.href = redirect_url
       }
     }
   }
@@ -70,7 +72,8 @@ const store = new Vuex.Store({
 // store.state.user
 // store.state.token
 // store.commit('registerUser', {"hoge": 123})
-// store.dispatch('getToken')
+// store.dispatch('getToken', {screen_name: 'shkashkashkas'})
+// store.dispatch('getToken', {screen_name: 'hode'})
 
 
 export default store
