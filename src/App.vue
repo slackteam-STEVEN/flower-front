@@ -77,7 +77,8 @@
       },
       onSubmit: async function () {
         this.$store.dispatch('getToken', {screen_name: this.form.screen_name})
-        console.log(this.$cookies)
+        console.log(this.$cookie)
+        console.log(this.$store)
       }
     }
   }
