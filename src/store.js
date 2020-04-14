@@ -13,6 +13,7 @@ const store = new Vuex.Store({
   state: {
     user: "",
     token: "",
+    next_vid: 0,
     status: false
   },
   mutations: {

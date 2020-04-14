@@ -50,7 +50,7 @@ const routes = [
     name: 'error',
     component: {
       template: "",
-      created() {window.location.href="/error.html"}
+      created() {window.location.href="/vue-cookies/sample/welcome.html"}
     }
   }
 ]
