@@ -36,10 +36,15 @@ const routes = [
     component: {
       template: "",
       created() {
-        // redirect to backend with params()
-        let params = "random_str=" + "shikarand" + "&"
-        params = params + "oauth_token=" + this.$route.query['oauth_token'] + "&"
-        params = params + "oauth_verifier=" + this.$route.query['oauth_verifier']
+        // クッキー情報にセッション状態を保存
+        if (this.$cookies.get("random_str") != null) {
+          this.$cookies.set("status", true)
+        }
+        
+        // バックエンドにリダイレクト
+        let params = "random_str=" + this.$cookies.get("random_str")  || ""
+        params = params + "&oauth_token=" + this.$route.query['oauth_token']
+        params = params + "&oauth_verifier=" + this.$route.query['oauth_verifier']
         const redirect_url = "http://192.168.0.3:5000/register?" + params
         window.location.href = redirect_url
       }

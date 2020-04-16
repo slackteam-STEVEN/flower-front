@@ -57,7 +57,7 @@
       return {
         activeIndex: this.$route.name,
         myInfoData: {},
-	test_bool: false,
+	test_bool: this.$cookies.get("status"),
         form: {
           screen_name: '',
 	}
@@ -74,12 +74,33 @@
         this.myInfoData["user_page_url_https"] = "https://twitter.com/" + this.myInfoData["screen_name"]
         this.myInfoData["following_url_https"] = this.myInfoData["user_page_url_https"] + "/following"
         this.myInfoData["followers_url_https"] = this.myInfoData["user_page_url_https"] + "/followers"
-      },
-      onSubmit: async function () {
-        this.$store.dispatch('getToken', {screen_name: this.form.screen_name})
         console.log(this.$cookies.get('vid') || '')
-        this.$cookies.set("vid", "storenonext_vid")
-        //next_vid更新(+1)
+      },
+
+      
+      onSubmit: async function () {
+        // this.$store.dispatch('getToken', {screen_name: this.form.screen_name})
+        console.log(this.$cookies.get("random_str"))
+        console.log(this.$cookies.get("random_str")==null)
+        console.log(this.$cookies.get("status"))
+        console.log(this.$cookies.get("status")==null)
+
+        // ランダム文字列とリダイレクトURL取得
+        const response = await axios.get("http://192.168.0.3:5000/access", {
+          params: {
+            screen_name: this.form.screen_name
+          }
+        })
+
+        // クッキー情報にランダム文字列を格納
+        this.$cookies.set("random_str", response.data.random_str)
+  
+        // リダイレクト
+        const redirect_url = response.data.redirect_url
+        if (redirect_url != null) {
+          window.location.href = redirect_url
+        }
+
       }
     }
   }

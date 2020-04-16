@@ -55,21 +55,30 @@ def access():
 
     screen_name = request.args.get("screen_name")
 
-    if screen_name == "shkashkashkas":
-        result = {
-            "status_code": 200,
-            "random_str": "shikarand",
-        }
+    #    if screen_name == "shkashkashkas":
+    #        result = {
+    #            "status_code": 200,
+    #            "random_str": "shikarand",
+    #        }
+    #
+    #    else:
+    #        # idがDBにない(twitterAPI認証できない)場合の処理
+    #        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    #        redirect_url = auth.get_authorization_url()
+    #        result = {
+    #            "status_code": 200,
+    #            "redirect_url": redirect_url,
+    #            "random_str": "qawsedrftgyhujikolp",
+    #        }
 
-    else:
-        # idがDBにない(twitterAPI認証できない)場合の処理
-        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        redirect_url = auth.get_authorization_url()
-        result = {
-            "status_code": 200,
-            "redirect_url": redirect_url,
-            "random_str": "qawsedrftgyhujikolp",
-        }
+    # idがDBにない(twitterAPI認証できない)場合の処理
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    redirect_url = auth.get_authorization_url()
+    result = {
+        "status_code": 200,
+        "redirect_url": redirect_url,
+        "random_str": "qawsedrftgyhujikolp",
+    }
 
     return json.dumps(result)
 
