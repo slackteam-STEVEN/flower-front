@@ -2,7 +2,6 @@ import json
 import os
 
 import tweepy
-
 from flask import Flask, redirect, request, url_for
 from flask_cors import CORS
 
@@ -42,7 +41,7 @@ def print_keys():
     return json.dumps({"status_code": 200})
 
 
-@app.route("/access", methods=["GET"])
+@app.route("/access", methods=["POST"])
 def access():
 
     # すでにlogin_infoに同じipがある場合、topにリダイレクト
@@ -53,7 +52,8 @@ def access():
     # login_url = auth.get_authorization_url()
     # return redirect(login_url)
 
-    screen_name = request.args.get("screen_name")
+    screen_name = request.form.get("screen_name")
+    callback_url = request.form.get("callback_url")
 
     #    if screen_name == "shkashkashkas":
     #        result = {
@@ -76,8 +76,7 @@ def access():
     redirect_url = auth.get_authorization_url()
     result = {
         "status_code": 200,
-        "redirect_url": redirect_url,
-        "random_str": "qawsedrftgyhujikolp",
+        "context": {"redirect_url": redirect_url, "random_key": "qawsedrftgyhujikolp",},
     }
 
     return json.dumps(result)
@@ -109,6 +108,7 @@ def register():
     print(result)
     # return json.dumps(result)
     return redirect("http://192.168.0.3:8080/following")
+    # return redirect("http://localhost:8080/following")
 
 
 @app.route("/get_myinfo", methods=["GET"])

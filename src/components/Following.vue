@@ -33,7 +33,7 @@
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-button type="danger" v-if="scope.row.following=='True'" v-on:click="unfollow(scope.row.screen_name)">
+          <el-button type="danger" v-if="scope.row.following=='True'" v-on:click="destroyFollow(scope.row.screen_name)">
             フォロー除外
           </el-button>
           <el-button type="primary" plain v-else v-on:click="addFollow(scope.row.screen_name)">
@@ -63,7 +63,11 @@ export default {
     updataTableData: async function () {
     
       // back側にフォロー一覧を取得する要求を飛ばす
-      const response = await axios.get('http://192.168.0.3:5000/get_follower')
+      const response = await axios.get('http://192.168.0.3:5000/get_follow', {
+        params: {
+          random_key: this.$cookies.get("random_key")
+        }
+      })
     
       // 内容を保存
       this.tableData = response.data.context
@@ -74,6 +78,7 @@ export default {
         data["user_page_url_https"] = "https://twitter.com/" + data["screen_name"]
         data["following_url_https"] = data["user_page_url_https"] + "/following"
         data["followers_url_https"] = data["user_page_url_https"] + "/followers"
+        data["following"] = "True"
       })
     
     },
@@ -103,6 +108,7 @@ export default {
 
       // パラメータにscreen_nameをセット
       var params = new URLSearchParams()
+      params.append('random_key', this.$cookies.get("random_key"))
       params.append('screen_name', screen_name)
     
       // back側にフォロー追加の要求を飛ばす
@@ -120,13 +126,13 @@ export default {
     },
     
     
-    unfollow: function(screen_name) {
+    destroyFollow: function(screen_name) {
       this.$confirm('このユーザをフォローから除外しますか?', 'Warning', {
         confirmButtonText: 'OK',
         cancelButtonText: 'キャンセル',
         type: 'warning'
       }).then(() => {
-        this.baseUnfollow(screen_name)
+        this.baseDestroyfollow(screen_name)
         this.$message({
           type: 'success',
           message: 'フォローから除外しました'
@@ -140,14 +146,15 @@ export default {
     },
     
     
-    baseUnfollow: async function (screen_name) {
+    baseDestroyfollow: async function (screen_name) {
 
       // パラメータにscreen_nameをセット
       var params = new URLSearchParams()
+      params.append('random_key', this.$cookies.get("random_key"))
       params.append('screen_name', screen_name)
     
       // back側にフォロー削除の要求を飛ばす
-      const response = await axios.post('http://192.168.0.3:5000/unfollow', params)
+      const response = await axios.post('http://192.168.0.3:5000/destroy_follow', params)
     
       // back側への要求成功の場合、front側の表示用データを変更
       if(response.data.status_code == 200){

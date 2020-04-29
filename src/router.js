@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Followers from './components/Followers.vue'
 import Following from './components/Following.vue'
 
+const axios = require('axios').create()
+
 Vue.use(Router)
 
 
@@ -36,17 +38,28 @@ const routes = [
     component: {
       template: "",
       created() {
-        // クッキー情報にセッション状態を保存
-        if (this.$cookies.get("random_str") != null) {
+        console.log("hoge")
+
+        // パラメータにscreen_nameをセット
+        var params = new URLSearchParams()
+        params.append('callback_url', 'http://192.168.0.3:8080/get_tw_oauth')
+        params.append('random_key', this.$cookies.get("random_key"))
+        params.append('oauth_verifier', this.$route.query['oauth_verifier'])
+
+        axios.post("http://192.168.0.3:5000/register", params)
+        .then(response => {
+          console.log(response);
+
+          // ステータスコード取得
+          const back_status_code = response.data.status_code
+          console.log(back_status_code);
+
+          // クッキー情報にセッション状態を保存
           this.$cookies.set("status", true)
-        }
-        
-        // バックエンドにリダイレクト
-        let params = "random_str=" + this.$cookies.get("random_str")  || ""
-        params = params + "&oauth_token=" + this.$route.query['oauth_token']
-        params = params + "&oauth_verifier=" + this.$route.query['oauth_verifier']
-        const redirect_url = "http://192.168.0.3:5000/register?" + params
-        window.location.href = redirect_url
+
+          // リダイレクト
+          this.$router.push('following')
+        })
       }
     },
   },
@@ -55,7 +68,7 @@ const routes = [
     name: 'error',
     component: {
       template: "",
-      created() {window.location.href="/vue-cookies/sample/welcome.html"}
+      created() {window.location.href="/error.html"}
     }
   }
 ]
