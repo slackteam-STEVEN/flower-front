@@ -7,10 +7,6 @@
       <el-aside width="200px">
         <el-menu v-if="$cookies.get('status')" mode="vertical" default-active="0">
           <el-link :href="`https://twitter.com/${screen_name}`">
-            <img :src="`https://twitter.com/${screen_name}`/photo" :width="400" :height="400" />
-          </el-link>
-          <br/>
-          <el-link :href="`https://twitter.com/${screen_name}`">
             {{ screen_name }}
           </el-link>
         </el-menu>
