@@ -9,18 +9,10 @@ Vue.use(Router)
 
 
 const routes = [
-//  {
-//    path: '/',
-//    name: 'top',
-//    component: {
-//      template: "",
-//      created() {window.location.href="http://192.168.0.3:5000/access"}
-//    }
-//  },
   {
     path: '/',
     name: 'top',
-    component: Following
+    component: Followers
   },
   {
     path: '/following',
@@ -38,28 +30,31 @@ const routes = [
     component: {
       template: "",
       created() {
-        console.log("hoge")
-
         // パラメータにscreen_nameをセット
         var params = new URLSearchParams()
-        params.append('callback_url', 'http://192.168.0.3:8080/get_tw_oauth')
+        params.append('callback_url', process.env.VUE_APP_FRONTEND_URL + '/get_tw_oauth')
         params.append('random_key', this.$cookies.get("random_key"))
         params.append('oauth_verifier', this.$route.query['oauth_verifier'])
 
-        axios.post("http://192.168.0.3:5000/register", params)
+        axios.post(process.env.VUE_APP_BACKEND_URL + "/register", params)
         .then(response => {
-          console.log(response);
-
           // ステータスコード取得
-          const back_status_code = response.data.status_code
-          console.log(back_status_code);
+          console.log(response.data.status_code);
+         
+          if (response.data.status_code == 200) {
+            // クッキー情報にセッション状態を保存
+            this.$cookies.set("status", true)
 
-          // クッキー情報にセッション状態を保存
-          this.$cookies.set("status", true)
+            // リダイレクト
+            this.$router.push('following')
+          } else {
+            window.location.href="/error.html"
+          }
 
-          // リダイレクト
-          this.$router.push('following')
-        })
+        }).catch(error => {
+          console.log(error);
+          window.location.href="/error.html"
+        });
       }
     },
   },
