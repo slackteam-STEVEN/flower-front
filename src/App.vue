@@ -61,7 +61,6 @@
       //    console.log(this.$cookies.get("random_key"))
       //},
       onSubmit: async function () {
-        console.log(this.$cookies.get("status"))
 
         // パラメータにscreen_nameをセット
         var params = new URLSearchParams()
@@ -71,12 +70,8 @@
         // ランダム文字列とリダイレクトURL取得
         await axios.post(process.env.VUE_APP_BACKEND_URL + '/access', params)
         .then(response => {
-          console.log(response);
 
-          // ステータスコード取得
-          const back_status_code = response.data.status_code
-          console.log(back_status_code);
-
+          // ステータスコード別処理
           if (response.data.status_code == 200) {
 
             // クッキー情報にscreen_nameとランダム文字列を格納
@@ -93,6 +88,7 @@
               window.location.href = process.env.VUE_APP_FRONTEND_URL + '/following'
             }
           } else {
+            console.log(response)
             window.location.href="/error.html"  
           }
 

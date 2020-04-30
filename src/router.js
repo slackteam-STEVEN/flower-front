@@ -48,6 +48,7 @@ const routes = [
             // リダイレクト
             this.$router.push('following')
           } else {
+            console.log(response)
             window.location.href="/error.html"
           }
 

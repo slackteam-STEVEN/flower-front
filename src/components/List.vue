@@ -58,7 +58,9 @@ export default {
     }
   },
   mounted () {
-    this.updataTableData()
+    if (this.$cookies.get("status")){
+      this.updataTableData()
+    }
   },
   methods: {
     test2: function(){
@@ -73,29 +75,40 @@ export default {
       }
     
       // back側にフォロー一覧を取得する要求を飛ばす
-      const response = await axios.get(targetUrl, {
+      //const response = await axios.get(targetUrl, {
+      await axios.get(targetUrl, {
         params: {
           random_key: this.$cookies.get("random_key")
         }
       })
+      .then(response => {   
 
-      console.log(response)
+        console.log(response)
 
-      // 内容を保存
-      this.tableData = response.data.context
-      console.log(this.tableData)
+        if(response.data.status_code == 200){
+          // 内容を保存
+          this.tableData = response.data.context
+          console.log(this.tableData)
     
-      // 内容を一部追加
-      this.tableData.forEach(function(data){
-        data["at_screen_name"] = "@" + data["screen_name"]
-        data["user_page_url_https"] = "https://twitter.com/" + data["screen_name"]
-        data["following_url_https"] = data["user_page_url_https"] + "/following"
-        data["followers_url_https"] = data["user_page_url_https"] + "/followers"
-        if (route == 'following') {
-          data["following"] = true
+          // 内容を一部追加
+          this.tableData.forEach(function(data){
+            data["at_screen_name"] = "@" + data["screen_name"]
+            data["user_page_url_https"] = "https://twitter.com/" + data["screen_name"]
+            data["following_url_https"] = data["user_page_url_https"] + "/following"
+            data["followers_url_https"] = data["user_page_url_https"] + "/followers"
+            if (route == 'following') {
+              data["following"] = true
+            }
+          })
+        } else {
+          console.log(response)
+          window.location.href="/error.html"
         }
-      })
-    
+
+      }).catch(error => {
+        console.log(error);
+        window.location.href="/error.html"
+      });
     },
     
 
@@ -119,27 +132,6 @@ export default {
     },
     
     
-    baseAddFollow: async function (screen_name) {
-
-      // パラメータにscreen_nameをセット
-      var params = new URLSearchParams()
-      params.append('random_key', this.$cookies.get("random_key"))
-      params.append('screen_name', screen_name)
-    
-      // back側にフォロー追加の要求を飛ばす
-      const response = await axios.post(process.env.VUE_APP_BACKEND_URL + '/add_follow', params)
-    
-      // back側への要求成功の場合、front側の表示用データを変更
-      if(response.data.status_code == 200){
-        this.tableData.forEach(function(data){
-          if(data['screen_name'] == screen_name){
-            data['following'] = true
-          }
-        })
-      }
-    
-    },
-    
     
     destroyFollow: function(screen_name) {
       this.$confirm('このユーザをフォローから除外しますか?', 'Warning', {
@@ -159,28 +151,62 @@ export default {
         });          
       });
     },
+
+
+    baseAddFollow: async function (screen_name) {
+      // パラメータセット
+      var params = new URLSearchParams()
+      params.append('random_key', this.$cookies.get("random_key"))
+      params.append('screen_name', screen_name)
+    
+      // back側にフォロー追加の要求を飛ばす
+      //const response = await axios.post(process.env.VUE_APP_BACKEND_URL + '/add_follow', params)
+      await axios.post(process.env.VUE_APP_BACKEND_URL + '/add_follow', params)
+      .then(response => {   
+        // back側への要求成功の場合、front側の表示用データを変更
+        if(response.data.status_code == 200){
+          this.tableData.forEach(function(data){
+            if(data['screen_name'] == screen_name){
+              data['following'] = true
+            }
+          })
+        } else {
+          console.log(response)
+          window.location.href="/error.html"
+        }
+      }).catch(error => {
+        console.log(error);
+        window.location.href="/error.html"
+      });
+    },
     
     
     baseDestroyfollow: async function (screen_name) {
-
-      // パラメータにscreen_nameをセット
+      // パラメータセット
       var params = new URLSearchParams()
       params.append('random_key', this.$cookies.get("random_key"))
       params.append('screen_name', screen_name)
     
       // back側にフォロー削除の要求を飛ばす
-      const response = await axios.post(process.env.VUE_APP_BACKEND_URL + '/destroy_follow', params)
-    
-      // back側への要求成功の場合、front側の表示用データを変更
-      if(response.data.status_code == 200){
-        this.tableData.forEach(function(data){
-          if(data['screen_name'] == screen_name){
-            data['following'] = false
-          }
-        })
-      }
-    
-    },
+      //const response = await axios.post(process.env.VUE_APP_BACKEND_URL + '/destroy_follow', params)
+      await axios.post(process.env.VUE_APP_BACKEND_URL + '/destroy_follow', params)
+      .then(response => {   
+        // back側への要求成功の場合、front側の表示用データを変更
+        if(response.data.status_code == 200){
+          this.tableData.forEach(function(data){
+            if(data['screen_name'] == screen_name){
+              data['following'] = false
+            }
+          })
+        } else {
+          console.log(response)
+          window.location.href="/error.html"
+        }
+      }).catch(error => {
+        console.log(error);
+        window.location.href="/error.html"
+      });
+    }
   }
 }
 
